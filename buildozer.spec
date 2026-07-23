@@ -42,7 +42,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = python3,kivy,tkinter,tk,os,json,messagebox
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -56,7 +56,7 @@ requirements = python3,kivy
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse, landscape-reverse, or all
-orientation = portrait
+orientation = all
 
 # (list) List of services to declare
 # This is currently only relevant to Android services.
@@ -115,7 +115,7 @@ fullscreen = 0
 #android.minapi = 24
 
 # (int) Android SDK version to use
-#android.sdk = 20
+#android.sdk = 31
 
 # (str) Android NDK version to use
 #android.ndk = 23b
