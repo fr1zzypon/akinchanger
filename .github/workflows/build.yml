@@ -15,17 +15,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Accept Android SDK licenses
+      - name: Accept SDK licenses
         run: |
           yes | sdkmanager --licenses || true
 
+      - name: Check project files
+        run: |
+          echo "=== Checking required files ==="
+          ls -la
+          echo "=== Checking buildozer.spec ==="
+          cat buildozer.spec || echo "buildozer.spec not found!"
+
       - name: Build APK
         run: |
-          # Создаём файл ответов для Buildozer
-          echo "y" | buildozer -v android debug || true
+          yes | buildozer -v android debug
+
+      - name: Debug build output
+        run: |
+          echo "=== Checking bin folder ==="
+          ls -la ./bin/ || echo "bin folder not found"
+          echo "=== Searching for APK files ==="
+          find . -name "*.apk" -type f
+          echo "=== Checking .buildozer folder ==="
+          ls -la .buildozer/ || echo ".buildozer not found"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: ./bin/*.apk
+          if-no-files-found: ignore
