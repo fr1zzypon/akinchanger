@@ -15,9 +15,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --licenses || true
+
       - name: Build APK
         run: |
-          buildozer -v android debug
+          # Создаём файл ответов для Buildozer
+          echo "y" | buildozer -v android debug || true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
