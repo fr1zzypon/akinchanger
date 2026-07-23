@@ -29,22 +29,35 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             git zip unzip wget \
-            zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev \
+            zlib1g-dev libncurses-dev \
+            cmake libffi-dev libssl-dev \
             autoconf libtool pkg-config build-essential \
-            android-sdk-commandlinetools
+            openjdk-17-jdk
 
-      - name: Set up Android SDK environment
+      - name: Install Android SDK (command line tools)
         run: |
-          echo "ANDROID_HOME=/usr/lib/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=/usr/lib/android-sdk" >> $GITHUB_ENV
-          echo "/usr/lib/android-sdk/tools/bin" >> $GITHUB_PATH
-          echo "/usr/lib/android-sdk/platform-tools" >> $GITHUB_PATH
+          # Скачиваем command line tools (последняя версия)
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          mkdir -p android-sdk/cmdline-tools
+          unzip -q commandlinetools-linux-11076708_latest.zip -d android-sdk/cmdline-tools
+          mv android-sdk/cmdline-tools/cmdline-tools android-sdk/cmdline-tools/latest
+          
+          # Устанавливаем переменные окружения
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-      - name: Accept Android SDK licenses
+      - name: Accept SDK licenses and install components
         run: |
+          # Принимаем лицензии (обход ошибки yes)
           yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.1"
+          
+          # Устанавливаем необходимые компоненты
+          sdkmanager "platform-tools"
+          sdkmanager "platforms;android-33"
+          sdkmanager "build-tools;33.0.1"
+          sdkmanager "tools"
 
       - name: Install Python packages
         run: |
